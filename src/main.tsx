@@ -4,56 +4,60 @@ import "./index.css";
 import {
   Outlet,
   RouterProvider,
-  Link,
   Router,
   Route,
   RootRoute,
 } from "@tanstack/react-router";
 import { ThemeProvider } from "./components/theme-provider";
-import { ModeToggle } from "./components/mode-toggle";
+import GlobalRootLayout from "./components/Layouts/GlobalRootLayout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Home from "./pages/Home";
+
+const queryClient = new QueryClient();
 
 const rootRoute = new RootRoute({
+  component: () => <Outlet />,
+});
+// eslint-disable-next-line react-refresh/only-export-components
+const LayoutRoute = new Route({
+  getParentRoute: () => rootRoute,
+  id: "aaa",
   component: () => (
-    <>
-      <div className="p-2 flex gap-2 items-center">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{" "}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-        <div className="ml-auto">
-          <ModeToggle />
-        </div>
-      </div>
-      <hr />
+    <GlobalRootLayout>
       <Outlet />
-      {/* <TanStackRouterDevtools /> */}
-    </>
+    </GlobalRootLayout>
   ),
 });
 
 const indexRoute = new Route({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => LayoutRoute,
   path: "/",
+  component: () => <Home/>
+});
+const loginRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/login",
   component: function Index() {
     return (
       <div className="p-2">
-        <h3>Welcome Home!</h3>
+        <h3>Login!</h3>
       </div>
     );
   },
 });
 
 const aboutRoute = new Route({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => LayoutRoute,
   path: "/about",
   component: function About() {
     return <div className="p-2">Hello from About!</div>;
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute]);
+const routeTree = rootRoute.addChildren([
+  loginRoute,
+  LayoutRoute.addChildren([aboutRoute, indexRoute]),
+]);
 
 const router = new Router({ routeTree });
 
@@ -69,7 +73,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
       </ThemeProvider>
     </StrictMode>
   );
