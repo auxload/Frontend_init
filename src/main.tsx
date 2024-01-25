@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+// import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import {
@@ -12,6 +12,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import GlobalRootLayout from "./components/Layouts/GlobalRootLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Home from "./pages/Home";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -49,9 +50,7 @@ const loginRoute = new Route({
 const aboutRoute = new Route({
   getParentRoute: () => LayoutRoute,
   path: "/about",
-  component: function About() {
-    return <div className="p-2">Hello from About!</div>;
-  },
+  component: () => <About/>
 });
 
 const routeTree = rootRoute.addChildren([
@@ -71,12 +70,12 @@ const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <StrictMode>
+    // <StrictMode>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
         </QueryClientProvider>
       </ThemeProvider>
-    </StrictMode>
+    // </StrictMode>
   );
 }

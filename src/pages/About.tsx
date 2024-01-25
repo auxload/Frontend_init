@@ -1,12 +1,12 @@
 import MainLayout from '@/components/Layouts/MainLayout'
 
 
-const Home = () => {
+const About = () => {
   return (
     <MainLayout>
-        <h1 className='text-4xl'>Wellcome</h1>
+        <h1 className='text-4xl'>Hello from About</h1>
     </MainLayout>
   )
 }
 
-export default Home
+export default About
